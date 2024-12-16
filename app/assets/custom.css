@@ -1,0 +1,22 @@
+ .border-box {
+    padding: 5px;
+ }
+ 
+ .btn-warning {
+    color: white; 
+    font-size: 120%;
+ }
+
+ body {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+ }
+
+ .radio label {
+    color: gold;
+    font-size: 1.5rem;
+}
+
+/* Optional: Change the color of unselected stars */
+.radio input:checked ~ label {
+    color: gold;
+}
