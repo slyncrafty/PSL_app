@@ -1,46 +1,120 @@
- .border-box {
-    padding: 5px;
- }
- 
- .btn-warning {
-    color: white; 
-    font-size: 120%;
- }
+/* General Box Styling */
+.border-box {
+   padding: 5px;
+   box-sizing: border-box;
+}
 
- body {
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
- }
+/* Warning Button Styling */
+.btn-warning {
+   color: white;
+   font-size: 120%;
+   background-color: #ffc107; /* Bootstrap warning yellow */
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+}
 
- .radio label {
-    color: gold;
-    font-size: 1.5rem;
+.btn-warning:hover {
+   background-color: #e0a800; /* Darker yellow for hover */
+}
+
+/* Global Font Family */
+body {
+   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+/* Radio Button Styling */
+.radio label {
+   color: gold;
+   font-size: 1.5rem;
+   cursor: pointer;
 }
 
 .radio input:checked ~ label {
-    color: gold;
+   color: gold;
+   font-weight: bold;
 }
 
+/* Image Styling */
 img {
    max-height: 225px;
    object-fit: cover;
+   border-radius: 8px; /* Adds slight rounding to images */
 }
 
-/* Style for movie titles */
+/* Movie Title Styling */
 h3, h4, h5 {
    font-size: 1rem;
    margin-top: 0.5rem;
+   margin-bottom: 0.5rem;
    text-align: center;
+   line-height: 1.2; /* Better readability */
+   color: #333; /* Dark gray for better contrast */
 }
 
-/* Adjust selectbox alignment */
+/* Streamlit Selectbox Alignment */
 .stSelectbox > label {
    display: none;
 }
 
-/* Separator styling */
+/* Separator Styling */
 hr {
    border: 0;
    height: 1px;
    background: #ddd;
+   margin: 1rem 0;
+   opacity: 0.7; /* Subtle separator */
+}
+
+
+/* Streamlit Button Alignment */
+.stButton > button {
+   background-color: #ffc107; /* Warning button yellow */
+   color: white;
+   font-size: 1.2rem;
+   padding: 0.5rem 1rem;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+}
+
+.stButton > button:hover {
+   background-color: #e0a800; /* Darker yellow for hover */
+}
+
+/* Grid and Layout Tweaks */
+.stApp {
+   max-width: 1200px;
+   margin: auto;
+}
+
+.stColumn {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+/* Streamlit Text Input Box */
+.stTextInput > div > input {
+   padding: 0.5rem;
+   border: 1px solid #ddd;
+   border-radius: 4px;
+   font-size: 1rem;
+}
+
+/* Styling for Headings */
+h1 {
+   font-size: 2rem;
+   font-weight: bold;
+   color: #333;
+   text-align: center;
+   margin: 1rem 0;
+}
+
+h2 {
+   font-size: 1.5rem;
+   font-weight: bold;
+   color: #555;
+   text-align: center;
    margin: 1rem 0;
 }

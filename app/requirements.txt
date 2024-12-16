@@ -1,6 +1,4 @@
-dash
-dash-bootstrap-components
+streamlit
 pandas
 numpy
-joblib
 scikit-learn

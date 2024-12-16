@@ -35,9 +35,48 @@ def get_movie_card(movie, with_rating=False):
     title = movie['Title']
     movie_id = movie['movieID']
     
-    # Display poster and title
-    st.image(poster_url, use_container_width=True)#st.image(poster_url, width=250)
-    st.markdown(f"**{title}**", unsafe_allow_html=True)
+    # # Display poster and title
+    # st.image(poster_url, use_container_width=True)#st.image(poster_url, width=250)
+    # st.markdown(f"**{title}**", unsafe_allow_html=True)
+     # Custom card layout using Streamlit's markdown and container
+    card_style = """
+        <style>
+        .movie-card {
+            background-color: #424952;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            height: 400px;
+            width: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: auto;
+        }
+        .movie-card img {
+            max-height: 300px;
+            object-fit: cover;
+            margin-bottom: 5px;
+        }
+        .movie-card h6 {
+            font-size: 16px;
+            margin: 0;
+            flex-grow: 1;
+        }
+        </style>
+    """
+
+    # Card content with optional rating
+    card_content = f"""
+        <div class="movie-card">
+            <img src="{poster_url}" alt="{title}">
+            <h6>{title}</h6>
+        </div>
+    """
+
+    # Render the card
+    st.markdown(card_style, unsafe_allow_html=True)
+    st.markdown(card_content, unsafe_allow_html=True)
     
     if with_rating:
         # Define star options as in original
@@ -45,14 +84,6 @@ def get_movie_card(movie, with_rating=False):
         rating_key = f"rating_{movie_id}"
         current_value = st.session_state.user_ratings.get(movie_id, None)
         
-        # Determine the index for the radio widget
-        # If current_value is set, index = current_value, else 0 for "No rating"
-        # But since "No rating" is an option at index 0 (None),
-        # and actual ratings start from 1 which should map to index 1, etc.
-        # we need to adjust the index carefully.
-        # options=[None, 1,2,3,4,5]
-        # if current_value is None, index=0
-        # if current_value is X, index = X (since None is index 0, rating=1 is index=1)
         radio_index = current_value if current_value else 0
         
         chosen_rating = st.radio(
