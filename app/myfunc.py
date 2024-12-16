@@ -9,7 +9,8 @@ import os
 # from surprise.prediction_algorithms.knns import KNNWithZScore
 
 # Define paths to data files
-DATA_DIR = 'data'  # Adjust if your data directory is different
+script_dir = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(script_dir, 'data')  # Adjust if your data directory is different
 RATINGS_FILE = os.path.join(DATA_DIR, 'ratings.dat')
 MOVIES_FILE = os.path.join(DATA_DIR, 'movies.dat')
 RMAT_FILE = os.path.join(DATA_DIR, 'Rmat.csv')
