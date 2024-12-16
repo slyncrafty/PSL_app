@@ -9,11 +9,15 @@ from myfunc import (
     get_displayed_movies
 )
 
-# Load and prepare data
-ratings, movies, S_top30, top_10_popular = prepare_recommendation_system()
-
 # Page configuration
 st.set_page_config(page_title="Movie Recommender App", layout="wide")
+
+# Cache data loading to improve performance
+@st.cache_data
+def load_data():
+    return prepare_recommendation_system()
+
+ratings, movies, S_top30, top_10_popular = load_data()
 
 # Initialize session state for storing user ratings
 if "user_ratings" not in st.session_state:
@@ -31,9 +35,8 @@ def get_movie_card(movie, with_rating=False):
     title = movie['Title']
     movie_id = movie['movieID']
     
-    # Display in a container
-    
-    st.image(poster_url, use_container_width=True)
+    # Display poster and title
+    st.image(poster_url, use_container_width=True)#st.image(poster_url, width=250)
     st.markdown(f"**{title}**", unsafe_allow_html=True)
     
     if with_rating:
@@ -41,36 +44,44 @@ def get_movie_card(movie, with_rating=False):
         star_options = ["★☆☆☆☆", "★★☆☆☆", "★★★☆☆", "★★★★☆", "★★★★★"]
         rating_key = f"rating_{movie_id}"
         current_value = st.session_state.user_ratings.get(movie_id, None)
+        
+        # Determine the index for the radio widget
+        # If current_value is set, index = current_value, else 0 for "No rating"
+        # But since "No rating" is an option at index 0 (None),
+        # and actual ratings start from 1 which should map to index 1, etc.
+        # we need to adjust the index carefully.
+        # options=[None, 1,2,3,4,5]
+        # if current_value is None, index=0
+        # if current_value is X, index = X (since None is index 0, rating=1 is index=1)
+        radio_index = current_value if current_value else 0
+        
         chosen_rating = st.radio(
             "Rate this movie:",
             options=[None, 1, 2, 3, 4, 5],
             format_func=lambda x: star_options[x-1] if x else "No rating",
-            index=(current_value if current_value else 0),
+            index=radio_index,
             key=rating_key
         )
-        # Update session state
+        
+        # Update session state if a rating is chosen
         if chosen_rating is not None:
             st.session_state.user_ratings[movie_id] = chosen_rating
-    else:
-        # No rating input, just show title and poster
-        pass
+        else:
+            # If user selects "No rating", remove it from user_ratings if it exists
+            if movie_id in st.session_state.user_ratings:
+                del st.session_state.user_ratings[movie_id]
 
 
 def display_recommendations_with_posters(recommended_df):
     """
     Display recommended movies in a grid using columns.
     """
-    # We can try 5 columns as in the original layout
     cols = st.columns(5)
     for i, (_, movie) in enumerate(recommended_df.iterrows()):
         with cols[i % 5]:
             poster_url = movie['PosterURL'] if pd.notna(movie['PosterURL']) else "https://via.placeholder.com/300x450?text=No+Image"
-            st.image(poster_url, use_container_width=True)
+            st.image(poster_url, use_container_width=True)#st.image(poster_url, width=250)
             st.markdown(f"**{movie['Title']}**", unsafe_allow_html=True)
-            if 'PredictedRating' in movie and not pd.isna(movie['PredictedRating']):
-                st.write(f"Predicted Rating: {movie['PredictedRating']:.2f}")
-            else:
-                st.write("Predicted Rating: N/A")
 
 
 if page == "System I - Popularity":
@@ -89,8 +100,13 @@ elif page == "System II - Collaborative":
     # System II: Show 100 sample movies to rate
     st.title("Rate Movies to Get Recommendations")
     st.write("---")
+    
+    if "sample_movies" not in st.session_state:
+        st.session_state.sample_movies = get_displayed_movies(movies_df=movies, n=100)
+        print("Selected 100 movies: 70 popular and 30 random.")  # This will print only once
 
-    sample_movies = get_displayed_movies(movies_df=movies, n=100)
+    sample_movies = st.session_state.sample_movies
+    # sample_movies = get_displayed_movies(movies_df=movies, n=100)
     if sample_movies.empty:
         st.write("No movies available to display.")
     else:
@@ -101,8 +117,9 @@ elif page == "System II - Collaborative":
                 get_movie_card(movie, with_rating=True)
 
         st.write("---")
-        recommend_button = st.button("Get Recommendations", type='primary')
-        
+        # Recommendation button
+        recommend_button = st.button("Get Recommendations")
+
         if recommend_button:
             # Collect user ratings
             rating_input = {
@@ -111,10 +128,11 @@ elif page == "System II - Collaborative":
             }
 
             if not rating_input:
-                # No ratings given, show top 10 popular as fallback
+                # No ratings given, show top 10 popular as default
                 st.info("No ratings provided. Showing top 10 popular movies.")
                 recommended_movie_ids = top_10_popular['PrefixedMovieID'].tolist()[:10]
                 recommended_df = get_recommended_movies(recommended_movie_ids, movies_df=movies)
+                st.header("Your Recommendations")
                 display_recommendations_with_posters(recommended_df)
             else:
                 # Construct user ratings series
