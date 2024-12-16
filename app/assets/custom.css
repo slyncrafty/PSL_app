@@ -16,7 +16,31 @@
     font-size: 1.5rem;
 }
 
-/* Optional: Change the color of unselected stars */
 .radio input:checked ~ label {
     color: gold;
+}
+
+img {
+   max-height: 225px;
+   object-fit: cover;
+}
+
+/* Style for movie titles */
+h3, h4, h5 {
+   font-size: 1rem;
+   margin-top: 0.5rem;
+   text-align: center;
+}
+
+/* Adjust selectbox alignment */
+.stSelectbox > label {
+   display: none;
+}
+
+/* Separator styling */
+hr {
+   border: 0;
+   height: 1px;
+   background: #ddd;
+   margin: 1rem 0;
 }
