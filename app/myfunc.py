@@ -95,12 +95,14 @@ def compute_top10_popular(ratings, movies, top10_path=TOP10_POPULAR_FILE, thresh
 
     # Sort by number of positive ratings in descending order
     movie_counts_with_titles = movie_counts_with_titles.sort_values('NumPositiveRatings', ascending=False)
+    
+    # Prefix the MovieID with 'm'
+    movie_counts_with_titles['PrefixedMovieID'] = 'm' + movie_counts_with_titles['movieID'].astype(str)
 
     # Select the top 10 movies based on positive rating counts
     top_10_popular = movie_counts_with_titles.head(10).copy()
 
-    # Prefix the MovieID with 'm'
-    top_10_popular['PrefixedMovieID'] = 'm' + top_10_popular['movieID'].astype(str)
+    #top_10_popular['PrefixedMovieID'] = 'm' + top_10_popular['movieID'].astype(str)
 
     # Display the results
     display_columns = ['PrefixedMovieID', 'Title', 'NumPositiveRatings', 'PosterURL']
@@ -108,7 +110,7 @@ def compute_top10_popular(ratings, movies, top10_path=TOP10_POPULAR_FILE, thresh
 
     ## Save out
     if top10_path:
-        top_10_popular.to_csv(top10_path, index=False)
+        movie_counts_with_titles.to_csv(top10_path, index=False)
         
     return top_10_popular
 
