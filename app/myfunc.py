@@ -11,10 +11,10 @@ import os
 # Define paths to data files
 script_dir = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(script_dir, 'data')  # Adjust if your data directory is different
-RATINGS_FILE = os.path.join(DATA_DIR, 'ratings.dat')
-MOVIES_FILE = os.path.join(DATA_DIR, 'movies.dat')
-RMAT_FILE = os.path.join(DATA_DIR, 'Rmat.csv')
-SIM_MATRIX_FILE = os.path.join(DATA_DIR, 'similarity_matrix_full.csv')
+MOVIES_FILE = "https://liangfgithub.github.io/MovieData/movies.dat?raw=true"
+RATINGS_FILE = "https://liangfgithub.github.io/MovieData/ratings.dat?raw=true" 
+RMAT_FILE = "https://d3c33hcgiwev3.cloudfront.net/I-w9Wo-HSzmUGNNHw0pCzg_bc290b0e6b3a45c19f62b1b82b1699f1_Rmat.csv?Expires=1734480000&Signature=POU53r-wt9D3qAj9LesIXs7WFzJUJyfoon7QgMqkNgXHE8rfoFoW0BGX0NwfTPp2EOhtv1BG2Ew0YRDHu2T4I5TKI2q8W-1Hn1NlNjCMr8hBWEt-cXn8PUDa-HmjkW-nPvTjDgHL2GPTRkLlMRT7-FuN1Nr2WFHW7I6IekMEsDE_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A"
+SIM_MATRIX_FILE = "https://media.githubusercontent.com/media/slyncrafty/TESTD/refs/heads/main/similarity_matrix_full.csv"#os.path.join(DATA_DIR, 'similarity_matrix_full.csv')
 S_TOP30_FILE = os.path.join(DATA_DIR, 'S_top30.csv')
 TOP10_POPULAR_FILE = os.path.join(DATA_DIR, 'top_10_popular.csv')
 
@@ -405,55 +405,3 @@ def get_displayed_movies(movies_df, n=100, popular_ratio=0.7, random_seed=82):
     print(f"Selected {len(to_display)} movies: {n_popular} popular and {n_random} random.")
     
     return to_display
-
-
-
-
-# def myIBCF(newuser, S_top30, popularity_ranking):
-#     # newuser: pd.Series indexed by m1,...,m3706
-#     # S_top30: pd.DataFrame with similarities (already top-30 trimmed)
-#     # popularity_ranking: pd.DataFrame with columns ['PrefixedMovieID', 'Rank'] etc.
-
-#     rated_mask = newuser.notna()
-#     rated_movies = newuser.index[rated_mask]
-#     unrated_movies = newuser.index[~rated_mask]
-
-#     predictions = pd.Series(index=unrated_movies, dtype=float)
-
-#     for m_i in unrated_movies:
-#         neighbors = S_top30.loc[m_i].dropna().index  # Movies with known similarity to m_i
-#         # Only consider neighbors that the new user has rated
-#         rated_neighbors = neighbors.intersection(rated_movies)
-
-#         if len(rated_neighbors) > 0:
-#             # Similarities for these neighbors
-#             sim_values = S_top30.loc[m_i, rated_neighbors]
-#             user_ratings = newuser[rated_neighbors]
-
-#             denom = sim_values.sum()
-#             if denom == 0:
-#                 pred = np.nan
-#             else:
-#                 num = (sim_values * user_ratings).sum()
-#                 pred = num / denom
-#         else:
-#             pred = np.nan
-
-#         predictions[m_i] = pred
-
-#     # Now select top 10 based on predictions
-#     pred_sorted = predictions.dropna().sort_values(ascending=False)
-#     recommended = pred_sorted.head(10)
-
-#     if len(recommended) < 10:
-#         # Add popular movies to fill up spots
-#         # Exclude those already rated by the user
-#         already_rated = newuser.index[newuser.notna()]
-#         # Go through popularity ranking, select those not rated or already recommended
-#         additional_needed = 10 - len(recommended)
-#         pop_candidates = popularity_ranking[~popularity_ranking['PrefixedMovieID'].isin(already_rated)]
-#         pop_candidates = pop_candidates[~pop_candidates['PrefixedMovieID'].isin(recommended.index)]
-#         pop_fill = pop_candidates.head(additional_needed)['PrefixedMovieID']
-#         recommended = pd.concat([recommended, pd.Series([np.nan]*len(pop_fill), index=pop_fill)])
-
-#     return recommended.index.tolist()
