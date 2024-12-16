@@ -65,7 +65,7 @@ def display_recommendations_with_posters(recommended_df):
     for i, (_, movie) in enumerate(recommended_df.iterrows()):
         with cols[i % 5]:
             poster_url = movie['PosterURL'] if pd.notna(movie['PosterURL']) else "https://via.placeholder.com/300x450?text=No+Image"
-            st.image(poster_url, use_column_width='auto')
+            st.image(poster_url, use_container_width=True)
             st.markdown(f"**{movie['Title']}**", unsafe_allow_html=True)
             if 'PredictedRating' in movie and not pd.isna(movie['PredictedRating']):
                 st.write(f"Predicted Rating: {movie['PredictedRating']:.2f}")
