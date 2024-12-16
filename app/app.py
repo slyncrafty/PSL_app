@@ -32,9 +32,8 @@ def get_movie_card(movie, with_rating=False):
     movie_id = movie['movieID']
     
     # Display in a container
-    # We simulate a card look by using columns and markdown.
-    # For rating: use radio with star options
-    st.image(poster_url, use_column_width='auto')
+    
+    st.image(poster_url, use_container_width=True)
     st.markdown(f"**{title}**", unsafe_allow_html=True)
     
     if with_rating:
