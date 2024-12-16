@@ -105,14 +105,53 @@ def get_movie_card(movie, with_rating=False):
 
 def display_recommendations_with_posters(recommended_df):
     """
-    Display recommended movies in a grid using columns.
+    Display recommended movies in a grid using columns, styled similarly to get_movie_card.
     """
-    cols = st.columns(5)
+    # Custom CSS for the movie cards
+    card_style = """
+        <style>
+        .movie-card {
+            background-color: #ABCDEF;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            height: 400px;
+            width: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: auto;
+        }
+        .movie-card img {
+            max-height: 300px;
+            object-fit: cover;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+        .movie-card h6 {
+            font-size: 16px;
+            margin: 0;
+            flex-grow: 1;
+        }
+        </style>
+    """
+    # Inject the CSS into Streamlit
+    st.markdown(card_style, unsafe_allow_html=True)
+
+    # Create a grid of columns to display the cards
+    cols = st.columns(5)  # Adjust the number of columns as needed
     for i, (_, movie) in enumerate(recommended_df.iterrows()):
         with cols[i % 5]:
+            # Movie card content
             poster_url = movie['PosterURL'] if pd.notna(movie['PosterURL']) else "https://via.placeholder.com/300x450?text=No+Image"
-            st.image(poster_url, use_container_width=True)#st.image(poster_url, width=250)
-            st.markdown(f"**{movie['Title']}**", unsafe_allow_html=True)
+            card_content = f"""
+                <div class="movie-card">
+                    <img src="{poster_url}" alt="{movie['Title']}">
+                    <h6>{movie['Title']}</h6>
+                </div>
+            """
+            st.markdown(card_content, unsafe_allow_html=True)
+
 
 
 if page == "System I - Popularity":
